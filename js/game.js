@@ -17,13 +17,13 @@ let studentAttention = 100;
 let tasks = [
   { name: 'Лекція', x: 100, y: 100, time: 10, completed: false, size: 80, type: 'lecture' },
   { name: 'Їдальня', x: 300, y: 100, time: 15, completed: false, size: 100, type: 'cafeteria' },
-  { name: 'Іспит', x: 500, y: 100, time: 20, completed: false, size: 120, type: 'exam' },
+  { name: 'Іспит', x: 500, y: 100, time: 20, completed: false, size: 110, type: 'exam' },
   { name: 'Гуртожиток', x: 100, y: 300, time: 10, completed: false, size: 90, type: 'dorm' },
   { name: 'Бібліотека', x: 300, y: 300, time: 12, completed: false, size: 100, type: 'library' },
   { name: 'Спортивний зал', x: 500, y: 300, time: 18, completed: false, size: 110, type: 'gym' },
   { name: 'Кафе з друзями', x: 100, y: 500, time: 8, completed: false, size: 80, type: 'friends' },
-  { name: 'Магазин', x: 300, y: 500, time: 10, completed: false, size: 100, type: 'store' },
-  { name: 'Підготовка до іспиту', x: 500, y: 500, time: 15, completed: false, size: 85, type: 'study' }
+  { name: 'Магазин', x: 300, y: 500, time: 10, completed: false, size: 80, type: 'store' },
+  { name: 'Підготовка до іспиту', x: 500, y: 500, time: 15, completed: false, size: 80, type: 'study' }
 ];
 // Підказки
 const hints = {
@@ -105,32 +105,44 @@ function updateGame() {
     ctx.fill();
   });
 
-  // Виводимо рахунок і ресурси
-  ctx.fillStyle = 'black';
-  ctx.font = '20px Arial'; // Встановлюємо шрифт для рахунку та ресурсів
-  ctx.fillText('Енергія: ' + Math.round(studentEnergy), 20, 30);
-  ctx.fillText('Увага: ' + Math.round(studentAttention), 20, 60);
-  ctx.fillText('Час: ' + Math.round(timeLeft) + 'с', 20, 120);
-  ctx.fillText('Рахунок: ' + score, 20, 150);
 
-  // Перевірка на закінчення гри
-  if (studentEnergy <= 0 || studentAttention <= 0) {
-    ctx.fillText('Гра закінчена! Ти втомився.', 300, 300);
-    gameOver = true; // Завершуємо гру
+  function updateScoreboard() {
+    document.getElementById('energy').textContent = Math.round(studentEnergy);
+    document.getElementById('attention').textContent = Math.round(studentAttention);
+    document.getElementById('timeLeft').textContent = Math.round(timeLeft);
+    document.getElementById('score').textContent = score;
+  }
+  // Перевірка виграшу
+  if (score >= 100) {
+    gameOver = true;
+    document.getElementById('hint').textContent = 'Вітаємо! Ви виграли гру!';
+    return;
+  }
+  // Перевірка закінчення гри
+  if (studentEnergy <= 0 || studentAttention <= 0 || timeLeft <= 0) {
+    gameOver = true;
+    document.getElementById('hint').textContent =
+      studentEnergy <= 0 || studentAttention <= 0
+        ? 'Гра закінчена! Ти втомився.'
+        : 'День закінчено! Завтра новий день.';
     return;
   }
 
-  if (timeLeft <= 0) {
-    ctx.fillText('День закінчено! Завтра новий день.', 300, 300);
-    gameOver = true; // Завершуємо гру
-    return;
+  // Оновлюємо HTML-блок із ресурсами
+  updateScoreboard();
+  // Продовжуємо оновлювати гру
+  requestAnimationFrame(updateGame);
+}
+// Підказка
+function updateHint(task) {
+  const hintElement = document.getElementById('hint');
+  if (task) {
+    hintElement.textContent = "Підказка: " + hints[task.type];
+  } else {
+    hintElement.textContent = "Виберіть завдання, щоб отримати підказку!";
   }
-  // Підказка
-  if (currentTask) {
-    ctx.fillStyle = 'black';
-    ctx.font = '18px Arial';
-    ctx.fillText("Підказка: " + hints[currentTask.type], 10, 30); // Підказка для поточного завдання
-  }
+
+  updateHint(currentTask);
   // Оновлення гри
   requestAnimationFrame(updateGame);
 }
@@ -157,6 +169,7 @@ document.addEventListener('keydown', (e) => {
     studentY += studentSpeed;
     isMoving = true; // Студент рухається
   }
+
   // Перевірка на виконання завдань
   setInterval(() => {
     tasks.forEach(task => {
@@ -224,7 +237,7 @@ document.addEventListener('keydown', (e) => {
     if (Math.abs(task.x - studentX) < task.size / 2 && Math.abs(task.y - studentY) < task.size / 2) {
       if (!task.completed) {
         task.completed = true; // Завдання виконано
-        score += 10; // Додаємо бали
+        score += 15; // Додаємо бали
       }
     }
   });
