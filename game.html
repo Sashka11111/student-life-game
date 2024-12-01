@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Гра - Студентська Мурашина Ферма</title>
+        <link rel="stylesheet" href="styles/style.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <header>
+                <h1>Гра - Студентська Мурашина Ферма</h1>
+            </header>
+
+            <main>
+                <div id="game-container">
+                    <canvas id="gameCanvas"></canvas>
+                    <!-- Блок для відображення рахунку та ресурсів -->
+                    <div id="scoreboard">
+                        <p>Енергія: <span id="energy">100</span></p>
+                        <p>Увага: <span id="attention">100</span></p>
+                        <p>Час: <span id="timeLeft">200</span> с</p>
+                        <p>Рахунок: <span id="score">0</span></p>
+                    </div>
+
+                    <!-- Блок для підказки -->
+                    <div id="hint"></div>
+                </div>
+
+                <button onclick="window.location.href='index.html'">Назад до меню</button>
+            </main>
+
+            <footer>
+                <p>&copy; 2024 Хакатон. Всі права захищено.</p>
+            </footer>
+        </div>
+
+        <script src="js/game.js"></script>
+    </body>
+
+</html>
